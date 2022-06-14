@@ -46,7 +46,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       res.status(200).send(imagePath);
 
       // deleting any files saved locally
-      await deleteLocalFiles([imagePath]);
+     return await deleteLocalFiles([imagePath]);
     });
   
   // Root Endpoint
