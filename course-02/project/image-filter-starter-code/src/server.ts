@@ -29,7 +29,24 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
   /**************************************************************************** */
 
   //! END @TODO1
+    app.get("/filteredimage", async (req, res) => {
+      // destructuring the query params
+      let { image_url } = req.query;
 
+      // validation of the received image URL
+      if (!image_url) {
+        return res.status(400).send("enter a valid image url");
+      }
+      // calling the filterImage handler to download, filter, and save the filtered image locally
+      // returns the absolute path to the local image
+      let imagePath = await filterImageFromURL(image_url);
+
+      // sending the resulting file in response
+      res.status(200).send(imagePath);
+
+      // deleting any files saved locally
+      await deleteLocalFiles([imagePath]);
+    });
 
   // Root Endpoint
   // Displays a simple message to the user
