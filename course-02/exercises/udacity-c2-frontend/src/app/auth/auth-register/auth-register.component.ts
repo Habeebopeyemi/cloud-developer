@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { Validators, UntypedFormBuilder, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { User } from '../models/user.model';
 import { ModalController } from '@ionic/angular';
@@ -11,24 +11,24 @@ import { ModalController } from '@ionic/angular';
 })
 export class AuthRegisterComponent implements OnInit {
 
-  registerForm: FormGroup;
+  registerForm: UntypedFormGroup;
   error: string;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private auth: AuthService,
     private modal: ModalController
   ) { }
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-      password_confirm: new FormControl('', Validators.required),
-      password: new FormControl('', Validators.required),
-      email: new FormControl('', Validators.compose([
+      password_confirm: new UntypedFormControl('', Validators.required),
+      password: new UntypedFormControl('', Validators.required),
+      email: new UntypedFormControl('', Validators.compose([
         Validators.required,
         Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
       ])),
-      name: new FormControl('', Validators.compose([
+      name: new UntypedFormControl('', Validators.compose([
         Validators.required,
         Validators.pattern('^[a-zA-Z0-9_.+-]+$')
       ]))
@@ -55,7 +55,7 @@ export class AuthRegisterComponent implements OnInit {
              });
   }
 
-  passwordsMatch(group: FormGroup) {
+  passwordsMatch(group: UntypedFormGroup) {
     return group.controls.password.value === group.controls.password_confirm.value ? null : { passwordsMisMatch: true };
   }
 }

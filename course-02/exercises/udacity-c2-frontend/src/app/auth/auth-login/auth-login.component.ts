@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { Validators, UntypedFormBuilder, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 
 import { ModalController } from '@ionic/angular';
 
@@ -12,19 +12,19 @@ import { catchError } from 'rxjs/operators';
   styleUrls: ['./auth-login.component.scss'],
 })
 export class AuthLoginComponent implements OnInit {
-  loginForm: FormGroup;
+  loginForm: UntypedFormGroup;
   error: string;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private auth: AuthService,
     private modal: ModalController
   ) { }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      password: new FormControl('', Validators.required),
-      email: new FormControl('', Validators.compose([
+      password: new UntypedFormControl('', Validators.required),
+      email: new UntypedFormControl('', Validators.compose([
         Validators.required,
         Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
       ]))
