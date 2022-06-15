@@ -1,4 +1,4 @@
-import express from "express";
+import express, {Request, Response} from "express";
 import bodyParser from "body-parser";
 import { filterImageFromURL, deleteLocalFiles } from "./util/util";
 
@@ -29,9 +29,9 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
   /**************************************************************************** */
 
   //! END @TODO1
-  app.get("/filteredimage", async (req, res) => {
-    // destructuring the query params
-    let { image_url } = req.query;
+  app.get("/filteredimage", async (req: Request, res: Response) => {
+    // storing the image url into image_url variable of type string
+    let image_url: string = req.query.image_url;
 
     // validation of the received image URL
     if (!image_url) {
@@ -42,10 +42,11 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
     let imagePath = await filterImageFromURL(image_url);
 
     // sending the resulting file in response
-    res.status(200).send(imagePath);
+    res.status(200).sendFile(imagePath,async () => {
+      // deleting any files saved locally
+      await deleteLocalFiles([imagePath]);
+    });
 
-    // deleting any files saved locally
-    await deleteLocalFiles([imagePath]);
   });
 
   // Root Endpoint
