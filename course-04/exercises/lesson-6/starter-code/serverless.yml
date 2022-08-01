@@ -20,7 +20,7 @@ provider:
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
-
+  #ENABLING X-RAY tracing for lambda function
   tracing:
     lambda: true
     apiGateway: true
@@ -137,6 +137,7 @@ functions:
             description: Create a new group
             requestModels:
               'application/json': GroupRequest
+    #enable possibility of canary deployment
     deploymentSettings:
       type: Linear10PercentEvery1Minute
       alias: Live

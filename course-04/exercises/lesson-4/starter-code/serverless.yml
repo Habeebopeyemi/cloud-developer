@@ -71,7 +71,6 @@ custom:
         schema: ${file(models/create-image-request.json)}
 
 functions:
-
   GetGroups:
     handler: src/lambda/http/getGroups.handler
     events:
@@ -92,7 +91,7 @@ functions:
             summary: Create a new group
             description: Create a new group
             requestModels:
-              'application/json': GroupRequest
+              "application/json": GroupRequest
 
   GetImages:
     handler: src/lambda/http/getImages.handler
@@ -114,7 +113,7 @@ functions:
             summary: Create a new image
             description: Create a new image
             requestModels:
-              'application/json': ImageRequest
+              "application/json": ImageRequest
 
   SendUploadNotifications:
     environment:
@@ -126,7 +125,7 @@ functions:
       - sns:
           arn:
             Fn::Join:
-              - ':'
+              - ":"
               - - arn:aws:sns
                 - Ref: AWS::Region
                 - Ref: AWS::AccountId
@@ -135,6 +134,17 @@ functions:
 
   ResizeImage:
     handler: src/lambda/s3/resizeImage.handler
+    #attaching resize handler to sns notification
+    events:
+      - sns:
+          arn:
+            Fn::Join:
+              - ":"
+              - - arn:aws:sns
+                - Ref: AWS::Region
+                - Ref: AWS::AccountId
+                - ${self:custom.topicName}
+          topicName: ${self:custom.topicName}
 
   ConnectHandler:
     handler: src/lambda/websocket/connect.handler
@@ -194,8 +204,8 @@ resources:
         GlobalSecondaryIndexes:
           - IndexName: ${self:provider.environment.IMAGE_ID_INDEX}
             KeySchema:
-            - AttributeName: imageId
-              KeyType: HASH
+              - AttributeName: imageId
+                KeyType: HASH
             Projection:
               ProjectionType: ALL
 
@@ -203,12 +213,10 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.CONNECTIONS_TABLE}
@@ -216,7 +224,7 @@ resources:
     RequestBodyValidator:
       Type: AWS::ApiGateway::RequestValidator
       Properties:
-        Name: 'request-body-validator'
+        Name: "request-body-validator"
         RestApiId:
           Ref: ApiGatewayRestApi
         ValidateRequestBody: true
@@ -233,11 +241,10 @@ resources:
               Topic: !Ref ImagesTopic
         CorsConfiguration:
           CorsRules:
-            -
-              AllowedOrigins:
-                - '*'
+            - AllowedOrigins:
+                - "*"
               AllowedHeaders:
-                - '*'
+                - "*"
               AllowedMethods:
                 - GET
                 - PUT
@@ -255,9 +262,9 @@ resources:
           Statement:
             - Sid: PublicReadForGetBucketObjects
               Effect: Allow
-              Principal: '*'
-              Action: 's3:GetObject'
-              Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*'
+              Principal: "*"
+              Action: "s3:GetObject"
+              Resource: "arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*"
         Bucket: !Ref AttachmentsBucket
 
     SNSTopicPolicy:
@@ -270,8 +277,7 @@ resources:
               Principal:
                 AWS: "*"
               Action: sns:Publish
-              Resource:
-                !Ref ImagesTopic
+              Resource: !Ref ImagesTopic
               Condition:
                 ArnLike:
                   AWS:SourceArn: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}

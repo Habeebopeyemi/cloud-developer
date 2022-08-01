@@ -9,9 +9,11 @@ const groupsTable = process.env.GROUPS_TABLE
 exports.handler = async (event) => {
   console.log('Processing event: ', event)
 
-  const result = await docClient.scan({
-    TableName: groupsTable
-  }).promise()
+  const result = await docClient
+    .scan({
+      TableName: groupsTable
+    })
+    .promise()
 
   const items = result.Items
 
